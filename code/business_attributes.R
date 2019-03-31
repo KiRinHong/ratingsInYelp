@@ -245,4 +245,4 @@ p = c(p, summary(aov(stars ~ GoodForKids))[[1]][1,5])
 
 p
 p.adjust(p, method = 'fdr')
-summary(aov(stars ~ BusinessAcceptsCreditCards))[[1]][1,5]
+detach(lv_brunch_1)
