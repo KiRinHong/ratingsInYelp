@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from keras.models import Model
@@ -81,3 +80,10 @@ predicted_test = predicted_test+1
 review_test.shape
 review_test['expected'] = predicted_test
 review_test.to_csv('~/Documents/STAT628/ratingsInYelp/data/review_test_results_rmsedropout.csv')
+
+## change the format to fit kaggle
+df_test = pd.read_csv('review_test_results_rmsedropout.csv',lineterminator='\n', index_col=0)
+df_result = df_test.iloc[:,[0,2]]
+result = df_result.astype(int)
+result = result.rename(index=str, columns={"KaggleID": "ID", "expected": "Expected"})
+result.to_csv('result3.csv', index=False)
