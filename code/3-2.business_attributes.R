@@ -142,6 +142,7 @@ table(lv_br_business[,23])
 head(lv_br_business[,24])
 lv_br_business[which(lv_br_business[,24]=="u'free'"),24]="'free'"
 lv_br_business[which(lv_br_business[,24]=="u'paid'"),24]="'paid'"
+lv_br_business[which(lv_br_business[,24]=="'paid'"),24]="'no'"
 lv_br_business[which(lv_br_business[,24]=="u'no'"),24]="'no'"
 table(lv_br_business[,24])
 # free,no,paid
@@ -238,20 +239,65 @@ head(lvbr)
 dim(lvbr)
 colnames(lvbr)
 
+
+for (i in 1:14) {
+  lvbr[which(lvbr[, i]==''),i]='NA'
+  lvbr[, i] <- factor(lvbr[, i])
+}
+
+
 attach(lvbr)
+ave_star_int = numeric(length(ave_star))
+for (i in 1:length(ave_star)){
+  if (ave_star[i]<=3) ave_star_int[i] = 'Bad'
+  if (3<ave_star[i] & ave_star[i]<=4) ave_star_int[i]='Intermediate'
+  if (ave_star[i]>4) ave_star_int[i]='Wonderful'}
+table(ave_star_int)
+
+
+
 summary(aov(ave_star ~ Alcohol))
+#NoiseLevel
 summary(aov(ave_star ~ NoiseLevel))
+counts = table(ave_star_int,NoiseLevel)
+mosaicplot(counts, sort = 2:1, dir="h" , col = c("#857FCD","white"), 
+           cex=1.2, xlab = '', ylab = '', main = 'NoiseLevel', las=1)
 summary(aov(ave_star ~ RestaurantsPriceRange2))
+#RestaurantsReservations
 summary(aov(ave_star ~ RestaurantsReservations))
+counts = table(ave_star_int,RestaurantsReservations)
+mosaicplot(counts, sort = 2:1, dir="h" , col = c("#857FCD","white"), 
+           cex=1.2, xlab = '', ylab = '', main = 'RestaurantsReservations', las=1)
 summary(aov(ave_star ~ BikeParking))
+counts = table(ave_star_int,BikeParking)
+mosaicplot(counts, sort = 2:1, dir="h" , col = c("#857FCD","white"), 
+           cex=1.2, xlab = '', ylab = '', main = 'BikeParking', las=1)
 summary(aov(ave_star ~ RestaurantsTableService))
+counts = table(ave_star_int,RestaurantsTableService)
+mosaicplot(counts, sort = 2:1, dir="h" , col = c("#857FCD","white"), 
+           cex=1.2, xlab = '', ylab = '', main = 'RestaurantsTableService', las=1)
 summary(aov(ave_star ~ WiFi))
+counts = table(ave_star_int,WiFi)
+mosaicplot(counts, sort = 2:1, dir="h" , col = c("#857FCD","white"), 
+           cex=1.2, xlab = '', ylab = '', main = 'WiFi', las=1)
 summary(aov(ave_star ~ RestaurantsTakeOut))
 summary(aov(ave_star ~ OutdoorSeating))
+counts = table(ave_star_int,OutdoorSeating)
+mosaicplot(counts, sort = 2:1, dir="h" , col = c("#857FCD","white"), 
+           cex=1.2, xlab = '', ylab = '', main = 'OutdoorSeating', las=1)
 summary(aov(ave_star ~ RestaurantsGoodForGroups))
 summary(aov(ave_star ~ HasTV))
+counts = table(ave_star_int,HasTV)
+mosaicplot(counts, sort = 2:1, dir="h" , col = c("#857FCD","white"), 
+           cex=1.2, xlab = '', ylab = '', main = 'HasTV', las=1)
 summary(aov(ave_star ~ RestaurantsDelivery))
+counts = table(ave_star_int,RestaurantsDelivery)
+mosaicplot(counts, sort = 2:1, dir="h" , col = c("#857FCD","white"), 
+           cex=1.2, xlab = '', ylab = '', main = 'RestaurantsDelivery', las=1)
 summary(aov(ave_star ~ Caters))
+counts = table(ave_star_int,Caters)
+mosaicplot(counts, sort = 2:1, dir="h" , col = c("#857FCD","white"), 
+           cex=1.2, xlab = '', ylab = '', main = 'Caters', las=1)
 summary(aov(ave_star ~ GoodForKids))
 p = NULL
 p = c(p, summary(aov(ave_star ~ Alcohol))[[1]][1,5])
@@ -269,7 +315,6 @@ p = c(p, summary(aov(ave_star ~ RestaurantsDelivery))[[1]][1,5])
 p = c(p, summary(aov(ave_star ~ Caters))[[1]][1,5])
 p = c(p, summary(aov(ave_star ~ GoodForKids))[[1]][1,5])
 p
-p.adjust(p, method = 'fdr')
 detach(lvbr)
 for (i in 1:14) {
   lvbr[which(lvbr[, i]==''),i]='NA'
@@ -277,7 +322,7 @@ for (i in 1:14) {
 }
 write.csv(lvbr, file = 'lvbr.csv', quote = F, row.names = F)
 lvbr_cat <- read.csv('lvbr.csv', header = T, na.strings = c())
-
-
-rf <- randomForest(ave_star~., data = lvbr_cat)
-rf$importance
+colnames(lvbr_cat)
+lvbr_final = lvbr_cat[,c(2,4,5,6,9,11:13,15)]
+rf <- randomForest(ave_star~., data = lvbr_final)
+importance(rf)
