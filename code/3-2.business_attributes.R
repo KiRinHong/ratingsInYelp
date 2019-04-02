@@ -1,5 +1,5 @@
 install.packages('randomForest')
-brunch = readRDS('628data_brunch_merge.RDS', refhook = NULL)
+brunch = readRDS('../data/628_brunch_lv.RDS', refhook = NULL)
 head(lv_brunch[,c(1,40)])
 colnames(brunch)
 lv_brunch = brunch[which(brunch$city=='Las Vegas'),c(1,2,12:60)]
