@@ -3,17 +3,17 @@
 
 Folder: code
 
-  All codes we used for analysis. Please run them in order.
+-  All codes we used for analysis. Please run them in order.
   
   
 Folder: data
 
-  All cleaned data used in analysis.
+ - All cleaned data used in analysis.
   
   
 Folder: images
 
-  Important images during analysis.
+-  Important images during analysis.
 
 
 ## Authors
